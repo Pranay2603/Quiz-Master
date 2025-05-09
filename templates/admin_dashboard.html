@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px; /* Add spacing between tables */
+        }
+    
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+    
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <h2>Search Results</h2>
+    
+    <h3>Users</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Full Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.full_name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <h3>Subjects</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for subject in subjects %}
+            <tr>
+                <td>{{ subject.id }}</td>
+                <td>{{ subject.name }}</td>
+                <td>{{ subject.description }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <h3>Quizzes</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for quiz in quizzes %}
+            <tr>
+                <td>{{ quiz.id }}</td>
+                <td>{{ quiz.name }}</td>
+                <td>{{ quiz.description }}</td>
+                <td>{{ quiz.date }}</td>
+                <td>{{ quiz.duration }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Search</h2>
+    
+    <form action="{{ url_for('admin_dashboard') }}" method="GET">
+        <label for="search_users">Search Users:</label>
+        <input type="text" name="search_users" id="search_users">
+        <button type="submit">Search</button>
+    </form>
+    
+    <form action="{{ url_for('admin_dashboard') }}" method="GET">
+        <label for="search_subjects">Search Subjects:</label>
+        <input type="text" name="search_subjects" id="search_subjects">
+        <button type="submit">Search</button>
+    </form>
+    
+    <form action="{{ url_for('admin_dashboard') }}" method="GET">
+        <label for="search_quizzes">Search Quizzes:</label>
+        <input type="text" name="search_quizzes" id="search_quizzes">
+        <button type="submit">Search</button>
+    </form>  
+
+    <div class="container mt-5">
+        <h1>Admin Dashboard</h1>
+        <p class="lead">Welcome, Quiz Master!</p>
+        <a href="{{ url_for('admin_subjects') }}" class="btn btn-primary mb-3">Manage Subjects</a>
+        <a href="{{ url_for('admin_quizzes') }}" class="btn btn-primary mb-3">Manage Quizzes</a>
+        <p><a href="{{ url_for('hello_world') }}">Logout (for now)</a></p>
+    </div>
+    <canvas id="userChart" width="400" height="200"></canvas>
+    <canvas id="subjectChart" width="400" height="200"></canvas>
+    <canvas id="quizChart" width="400" height="200"></canvas>
+    <canvas id="questionChart" width="400" height="200"></canvas>
+    <canvas id="quizPerformanceChart" width="400" height="200"></canvas>
+    <script>
+        // Get the canvas element
+        const subjectChartCanvas = document.getElementById('subjectChart').getContext('2d');
+
+        // Get the subject count from the template
+        const subjectCount = parseInt('{{ subject_count }}');
+
+        // Create the chart
+        const subjectChart = new Chart(subjectChartCanvas, {
+            type: 'bar',
+            data: {
+                labels: ['Subjects'],
+                datasets: [{
+                    label: 'Number of Subjects',
+                    data: [subjectCount],
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+    <script>
+        // Get the canvas element
+        const userChartCanvas = document.getElementById('userChart').getContext('2d');
+
+        // Get the user count from the template
+        const userCount = parseInt('{{ user_count }}'); // Parse the user count as an integer
+
+        // Create the chart
+        const userChart = new Chart(userChartCanvas, {
+            type: 'bar',
+            data: {
+                labels: ['Users'],
+                datasets: [{
+                    label: 'Number of Users',
+                    data: [userCount], // Use the user count from the database
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+
+    <script>
+        // Get the canvas element
+        const quizChartCanvas = document.getElementById('quizChart').getContext('2d');
+    
+        // Get the quiz count from the template
+        const quizCount = parseInt('{{ quiz_count }}');
+    
+        // Create the chart
+        const quizChart = new Chart(quizChartCanvas, {
+        type: 'bar',
+        data: {
+            labels: ['Quizzes'],
+            datasets: [{
+            label: 'Number of Quizzes',
+            data: [quizCount],
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+            y: {
+                beginAtZero: true
+            }
+            }
+        }
+        });
+    </script>
+    
+    <script>
+        // Get the canvas element
+        const questionChartCanvas = document.getElementById('questionChart').getContext('2d');
+
+        // Get the question count from the template
+        const questionCount = parseInt('{{ question_count }}');
+
+        // Create the chart
+        const questionChart = new Chart(questionChartCanvas, {
+            type: 'bar',
+            data: {
+                labels: ['Questions'],
+                datasets: [{
+                    label: 'Number of Questions',
+                    data: [questionCount],
+                    backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                    borderColor: 'rgba(255, 206, 86, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+
+    <script>
+        // Get the canvas element
+        const quizPerformanceChartCanvas = document.getElementById('quizPerformanceChart').getContext('2d');
+
+        // Get the quiz scores from the template
+        const quizScores = JSON.parse('{{ quiz_scores | tojson | safe }}');
+
+        console.log('quizScores:', quizScores); // Keep this for debugging
+
+        // Extract quiz IDs and average scores from the dictionaries
+        const quizIds = quizScores.map(score => score.id);
+        const averageScores = quizScores.map(score => score['AVG(scores.total_scored)']);
+
+        // Create the chart
+        const quizPerformanceChart = new Chart(quizPerformanceChartCanvas, {
+            type: 'bar',
+            data: {
+                labels: quizIds, // Use quiz IDs as labels
+                datasets: [{
+                    label: 'Average Quiz Scores',
+                    data: averageScores,
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+   
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

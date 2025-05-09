@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <h1>Edit User</h1>
+    <form method="POST" action="{{ url_for('admin_edit_user', user_id=user.id) }}">
+        <label for="username">Username:</label>
+        <input type="text" name="username" value="{{ user.username }}" required><br>
+
+        <label for="full_name">Full Name:</label>
+        <input type="text" name="full_name" value="{{ user.full_name }}"><br>
+
+        <label for="qualification">Qualification:</label>
+        <input type="text" name="qualification" value="{{ user.qualification }}"><br>
+
+        <label for="dob">Date of Birth:</label>
+        <input type="date" name="dob" value="{{ user.dob }}"><br>
+
+        <input type="submit" value="Update User">
+    </form>
+{% endblock %}

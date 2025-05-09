@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User - Quizzes</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Quizzes</h1>
+        <a href="{{ url_for('logout') }}" class="btn btn-sm btn-danger">Logout</a>
+        <a href="{{ url_for('user_dashboard') }}" class="btn btn-sm btn-primary">Dashboard</a>
+
+        <h2>Past Quiz Attempts</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Quiz Name</th>
+                    <th>Attempt Time</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for attempt in past_attempts %}
+                <tr>
+                    <td>{{ attempt['name'] }}</td>
+                    <td>{{ attempt['time_stamp_of_attempt'] }}</td>
+                    <td>{{ attempt['total_scored'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>Available Quizzes</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th>Duration (minutes)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for quiz in quizzes %}
+                <tr>
+                    <td>{{ quiz['id'] }}</td>
+                    <td>{{ quiz['name'] }}</td>
+                    <td>{{ quiz['description'] }}</td>
+                    <td>{{ quiz['date'] }}</td>
+                    <td>{{ quiz['duration'] }}</td>
+                    <td>
+                        <a href="{{ url_for('take_quiz', id=quiz['id']) }}" class="btn btn-sm btn-primary">Take Quiz</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

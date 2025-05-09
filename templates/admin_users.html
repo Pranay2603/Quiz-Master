@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin - Users</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Users</h1>
+
+        <form action="{{ url_for('admin_users') }}" method="GET" class="mb-3">
+            <div class="input-group">
+                <input type="text" name="search_users" id="search_users" class="form-control" placeholder="Search Users">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-outline-secondary">Search</button>
+                </div>
+            </div>
+        </form>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Full Name</th>
+                    <th>Qualification</th>
+                    <th>DOB</th>
+                    <th>Actions</th>  </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user['id'] }}</td>
+                    <td>{{ user['username'] }}</td>
+                    <td>{{ user['full_name'] }}</td>
+                    <td>{{ user['qualification'] }}</td>
+                    <td>{{ user['dob'] }}</td>
+                    <td>
+                        <a href="{{ url_for('admin_edit_user_form', user_id=user['id']) }}" class="btn btn-sm btn-primary">Edit</a>
+                        <a href="{{ url_for('admin_delete_user', user_id=user['id']) }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

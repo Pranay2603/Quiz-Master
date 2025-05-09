@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>User Dashboard</h1>
+        <p class="lead">Welcome, {{ user.full_name }}!</p>
+        <a href="{{ url_for('user_quizzes') }}" class="btn btn-primary mb-3">Take Quizzes</a>
+        <p><a href="{{ url_for('logout') }}">Logout</a></p>
+    </div>
+
+    <h2>Your Quiz Scores</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Quiz Name</th>
+                <th>Date Attempted</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for attempt in past_attempts %}
+            <tr>
+                <td>{{ attempt.name }}</td>
+                <td>{{ attempt.time_stamp_of_attempt }}</td>
+                <td>{{ attempt.total_scored }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <canvas id="userQuizPerformanceChart" width="400" height="200"></canvas>
+
+    <script>
+        const userQuizPerformanceChartCanvas = document.getElementById('userQuizPerformanceChart').getContext('2d');
+        const pastAttempts = JSON.parse('{{ past_attempts | tojson | safe }}');
+
+        console.log(pastAttempts);
+        const quizNames = pastAttempts.map(attempt => attempt.name);
+        const scores = pastAttempts.map(attempt => attempt.total_scored);
+
+        const userQuizPerformanceChart = new Chart(userQuizPerformanceChartCanvas, {
+            type: 'bar',
+            data: {
+                labels: quizNames,
+                datasets: [{
+                    label: 'Your Quiz Scores',
+                    data: scores,
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
